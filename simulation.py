@@ -29,21 +29,6 @@ class Simulation:
         self.time_points = [0]
         self.velocity_points = [self.v0]
 
-    def update_parameters(self, angle, length, horizontal_length, v0, friction_incline, friction_horizontal):
-        self.angle = np.radians(angle)
-        self.L = length
-        self.horizontal_length = horizontal_length
-        self.v0 = v0
-        self.friction_incline = friction_incline
-        self.friction_horizontal = friction_horizontal
-        self.x_plane = np.linspace(0, self.L * np.cos(self.angle), 100)
-        self.y_plane = -self.x_plane * np.tan(self.angle) + self.L * np.sin(self.angle)
-        self.x_horizontal = np.linspace(self.L * np.cos(self.angle),
-                                        self.L * np.cos(self.angle) + self.horizontal_length, 100)
-        self.y_horizontal = np.zeros_like(self.x_horizontal)
-
-        self.reset()
-
 
     def step(self, dt):
         if self.on_inclined_plane:

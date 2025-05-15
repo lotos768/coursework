@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-from PyQt5.QtWidgets import QDialog, QVBoxLayout, QFileDialog
+from PyQt5.QtWidgets import QDialog, QVBoxLayout, QFileDialog, QMessageBox
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
 class SpeedGraphWindow(QDialog):
@@ -19,12 +19,17 @@ class SpeedGraphWindow(QDialog):
         self.ax.plot(time, velocity, 'r', label="Скорость v(t)")
         self.ax.set_xlabel("Время (с)", fontsize=12)
         self.ax.set_ylabel("Скорость (м/с)", fontsize=12)
+        self.ax.set_title("График зависимости скорости от времени", fontsize=14)
         self.ax.legend(fontsize=10)
         self.ax.grid(True, linestyle='--')
         self.canvas.draw()
 
     def clearGraph(self):
         self.ax.clear()
+        self.ax.set_xlabel("Время (с)", fontsize=12)
+        self.ax.set_ylabel("Скорость (м/с)", fontsize=12)
+        self.ax.set_title("График зависимости скорости от времени", fontsize=14)
+        self.ax.grid(True, linestyle='--')
         self.canvas.draw()
 
     def save_graph(self):
@@ -37,7 +42,10 @@ class SpeedGraphWindow(QDialog):
             options=options,
         )
         if file_path:
-            if not file_path.endswith((".png", ".jpg")):
-                file_path += ".png"
-            self.figure.savefig(file_path, dpi=300)
-            print(f"График скорости сохранен: {file_path}")
+            try:
+                if not file_path.lower().endswith((".png", ".jpg", ".jpeg")):
+                    file_path += ".png"
+                self.figure.savefig(file_path, dpi=300)
+                QMessageBox.information(self, "Сохранение графика", f"График успешно сохранен в\n{file_path}")
+            except Exception as e:
+                 QMessageBox.critical(self, "Ошибка сохранения", f"Не удалось сохранить график:\n{e}")
